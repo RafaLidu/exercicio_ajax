@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Github</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <img id="profile-avatar" class="profile-avatar" src="https://via.placeholder.com/180x180" alt=".">
+            <h1 id="profile-name" class="profile-name">Rafael Liduino</h1>
+            <h2 id="profile-username" class="profile-username">RafaLidu</h2>
+            <ul class="numbers">
+                <li class="numbers-item">
+                    <h4>Repositórios</h4>
+                    <span id="repo-count">-</span>
+                </li>
+                <li class="numbers-item">
+                    <h4>Seguidores</h4>
+                    <span id="followers-count">-</span>
+                </li>
+                <li class="numbers-item">
+                    <h4>Seguindo</h4>
+                    <span id="following-count">-</span>
+                </li>
+            </ul>
+            <a id="profile-link" href="#" class="profile-link">Ver no Github</a>
+        </div>
+    </header>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const API_URL = "https://api.github.com/users/RafaLidu";
+
+            const elements = {
+                avatar: document.getElementById("profile-avatar"),
+                name: document.getElementById("profile-name"),
+                username: document.getElementById("profile-username"),
+                repoCount: document.getElementById("repo-count"),
+                followersCount: document.getElementById("followers-count"),
+                followingCount: document.getElementById("following-count"),
+                profileLink: document.getElementById("profile-link")
+            };
+
+            try {
+                const xhr = new XMLHttpRequest();
+                xhr.open("GET", API_URL, true);
+                xhr.onload = function () {
+                    if (xhr.status >= 200 && xhr.status < 300) {
+                        const data = JSON.parse(xhr.responseText);
+
+                        elements.avatar.src = data.avatar_url;
+                        elements.name.textContent = data.name || "Nome não disponível";
+                        elements.username.textContent = `@${data.login}`;
+                        elements.repoCount.textContent = data.public_repos;
+                        elements.followersCount.textContent = data.followers;
+                        elements.followingCount.textContent = data.following;
+                        elements.profileLink.href = data.html_url;
+                    } else {
+                        throw new Error(`Erro: ${xhr.status} - ${xhr.statusText}`);
+                    }
+                };
+                xhr.onerror = function () {
+                    throw new Error("Erro ao conectar ao servidor.");
+                };
+                xhr.send();
+            } catch (error) {
+                console.error("Erro ao buscar os dados do usuário:", error);
+                elements.name.textContent = "Erro ao carregar dados";
+            }
+        });
+    </script>
+</body>
+</html>
